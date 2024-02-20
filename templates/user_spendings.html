@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Define the user spendings</title>
+</head>
+<body>
+    <h1>Define the user spendings</h1>
+    <form id="dataForm">
+        <label for="user_id">User ID:</label>
+        <input type="number" id="user_id" name="user_id" required><br><br>
+        
+        <label for="money_spent">Money Spent:</label>
+        <input type="number" id="money_spent" name="money_spent" required><br><br>
+        
+        <label for="year">Year:</label>
+        <input type="text" id="year" name="year" pattern="\d{4}" title="Year must be a four-digit number" required><br><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById("dataForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            const formData = new FormData(event.target);
+            const data = parseFormData(formData);
+            if (!validateData(data)) return;
+            sendDataToServer(data);
+        });
+
+        function parseFormData(formData) {
+            const data = {};
+            formData.forEach(function(value, key) {
+                data[key] = parseInt(value) || value;
+            });
+            return data;
+        }
+
+        function validateData(data) {
+            if (isNaN(data.money_spent)) {
+                alert('Money spent must be an integer.');
+                return false;
+            }
+            return true;
+        }
+
+        function sendDataToServer(data) {
+            fetch('/write_to_mongodb', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Display response message
+                // Reload the page after successful submission
+                location.reload();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
