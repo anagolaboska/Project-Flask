@@ -25,6 +25,9 @@ class UserSpending(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     money_spent = db.Column(db.Integer, nullable=False)
     year = db.Column(db.Integer, nullable=False)
+    
+with app.app_context():
+    db.create_all()
 
 @app.route("/")
 def index():
