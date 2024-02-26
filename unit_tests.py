@@ -9,8 +9,8 @@ def client():
         with app.app_context():
             db.create_all()
             # Populate test data
-            user1 = UserInfo(user_id=1, name='Alice', email='alice@example.com', age=25)
-            user2 = UserInfo(user_id=2, name='Bob', email='bob@example.com', age=30)
+            user1 = UserInfo(user_id=1, name='Name 1', email='name1@example.com', age=25)
+            user2 = UserInfo(user_id=2, name='Name 2', email='name2@example.com', age=30)
             db.session.add(user1)
             db.session.add(user2)
             db.session.commit()
@@ -31,14 +31,14 @@ def test_all_users(client):
     assert response.status_code == 200
     data = response.json['users']
     assert len(data) == 2
-    assert data[0]['name'] == 'Alice'
-    assert data[1]['name'] == 'Bob'
+    assert data[0]['name'] == 'Name 1'
+    assert data[1]['name'] == 'Name 2'
 
 def test_average_spending_by_age(client):
     response = client.get('/average_spending_by_age/1')
     assert response.status_code == 200
     data = response.json
-    assert data['user_name'] == 'Alice'
+    assert data['user_name'] == 'Name 1'
     assert data['total_spending'] == 300
 
 def test_write_to_mongodb(client):
